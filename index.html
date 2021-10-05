@@ -1,0 +1,97 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Nordicité - Test</title>
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.19/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.19/"></script>
+
+  <script>
+ require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer"], function (esriConfig,Map, MapView,FeatureLayer) {
+
+        esriConfig.apiKey = "AAPK42ff91e61f5a45318f44727cec514cf8mmoZ9pyBkhoToszHnWulnwGinBEoozHHe1fCo-vsiEfTFBC7N8sniXmDxJizat3h";
+
+        const map = new Map({
+          basemap: "arcgis-topographic" // Basemap layer service
+        });
+
+        const view = new MapView({
+          map: map,
+          center: [-73.185417, 46.084711], // Longitude, latitude
+          zoom: 13, // Zoom level
+          container: "viewDiv" // Div element
+        });
+		
+		require(["esri/identity/OAuthInfo", "esri/identity/IdentityManager"],
+function (OAuthInfo, esriId)
+{
+  let info = new OAuthInfo({
+    appId: "WmFh3vt0nrQHD1b5",
+    popup: true
+  });
+
+  esriId.registerOAuthInfos([info]);
+})
+	
+require([      "esri/portal/Portal",      "esri/identity/OAuthInfo",      "esri/identity/IdentityManager"    ], function (      Portal, OAuthInfo, identityManager) {
+var portal = "https://www.arcgis.com";
+var info = new OAuthInfo({
+appId: "WmFh3vt0nrQHD1b5", //*** Your Client ID value goes here ***//        
+popup: false // inline redirects don't require any additional app configuration      
+});
+identityManager.registerOAuthInfos([info]);
+portal.authMode = "immediate"; // Setting authMode to immediate signs the user in once loaded
+
+});
+
+
+
+
+
+	
+		/********************
+         * Add feature layer
+         ********************/
+
+        // Carbon storage of trees in Warren Wilson College.
+        const featureLayer = new FeatureLayer({
+          url: "https://utility.arcgis.com/usrsvcs/servers/ffa27913fd5c46c289b0adc82e88ab72/rest/services/GEO_BF_Berthierville_20210903/FeatureServer"
+        });
+		
+		map.add(featureLayer);
+		
+
+      });
+	  
+
+
+
+
+ 
+ 
+	  
+	  
+	  
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>
+
+
+
