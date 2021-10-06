@@ -13,6 +13,21 @@
       height: 100%;
       width: 100%;
     }
+	
+	#Fenetre1 {
+	position: absolute;
+    z-index: 1000;
+    background: white;
+    padding: 10px;
+    right: 0;
+    margin: 10px;
+    min-height: 50px;
+    width: 190px;
+    left: 0px;
+	top:73px;
+    border-radius: .4em;
+    box-shadow: 0 0 6px #999;
+}
   </style>
 
   <link rel="stylesheet" href="https://js.arcgis.com/4.19/esri/themes/light/main.css">
@@ -29,37 +44,11 @@
 
         const view = new MapView({
           map: map,
-          center: [-73.185417, 46.084711], // Longitude, latitude
-          zoom: 13, // Zoom level
+          center: [-73.665739, 45.899327], // Longitude, latitude
+          zoom: 15, // Zoom level
           container: "viewDiv" // Div element
         });
 		
-		require(["esri/identity/OAuthInfo", "esri/identity/IdentityManager"],
-function (OAuthInfo, esriId)
-{
-  let info = new OAuthInfo({
-    appId: "WmFh3vt0nrQHD1b5",
-    popup: true
-  });
-
-  esriId.registerOAuthInfos([info]);
-})
-	
-require([      "esri/portal/Portal",      "esri/identity/OAuthInfo",      "esri/identity/IdentityManager"    ], function (      Portal, OAuthInfo, identityManager) {
-var portal = "https://www.arcgis.com";
-var info = new OAuthInfo({
-appId: "WmFh3vt0nrQHD1b5", //*** Your Client ID value goes here ***//        
-popup: false // inline redirects don't require any additional app configuration      
-});
-identityManager.registerOAuthInfos([info]);
-portal.authMode = "immediate"; // Setting authMode to immediate signs the user in once loaded
-
-});
-
-
-
-
-
 	
 		/********************
          * Add feature layer
@@ -67,7 +56,7 @@ portal.authMode = "immediate"; // Setting authMode to immediate signs the user i
 
         // Carbon storage of trees in Warren Wilson College.
         const featureLayer = new FeatureLayer({
-          url: "https://utility.arcgis.com/usrsvcs/servers/ffa27913fd5c46c289b0adc82e88ab72/rest/services/GEO_BF_Berthierville_20210903/FeatureServer"
+          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer"
         });
 		
 		map.add(featureLayer);
@@ -75,12 +64,6 @@ portal.authMode = "immediate"; // Setting authMode to immediate signs the user i
 
       });
 	  
-
-
-
-
- 
- 
 	  
 	  
 	  
