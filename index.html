@@ -31,21 +31,45 @@
   </style>
 
   <link rel="stylesheet" href="https://js.arcgis.com/4.19/esri/themes/light/main.css">
+  
+  
+  
+  <body>
+  <div id="viewDiv"></div>
+</body>
+
+
+
   <script src="https://js.arcgis.com/4.19/"></script>
 
   <script>
+
+
+
+
+ 
+ 
+ 
+  
+  
+ 
+
+  
+  
+  
+  
  require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer"], function (esriConfig,Map, MapView,FeatureLayer) {
 
         esriConfig.apiKey = "AAPK42ff91e61f5a45318f44727cec514cf8mmoZ9pyBkhoToszHnWulnwGinBEoozHHe1fCo-vsiEfTFBC7N8sniXmDxJizat3h";
 
         const map = new Map({
-          basemap: "arcgis-topographic" // Basemap layer service
+          basemap: "arcgis-topographic"
         });
 
         const view = new MapView({
           map: map,
-          center: [-73.665739, 45.899327], // Longitude, latitude
-          zoom: 15, // Zoom level
+          center: [-73.671669, 45.900995], // Longitude, latitude
+          zoom: 15,	  // Zoom level
           container: "viewDiv" // Div element
         });
 		
@@ -54,12 +78,33 @@
          * Add feature layer
          ********************/
 
-        // Carbon storage of trees in Warren Wilson College.
+        // Point d'échantillonage
         const featureLayer = new FeatureLayer({
-          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer"
+          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/0"
         });
 		
-		map.add(featureLayer);
+		map.add(featureLayer,0);
+		
+		// Bornes d'incendies
+        const featureLayer1 = new FeatureLayer({
+          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/1"
+        });
+		
+		map.add(featureLayer1,1);
+		
+		// Vannes
+        const featureLayer2 = new FeatureLayer({
+          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/2"
+        });
+		
+		map.add(featureLayer2,1);
+		
+		// Réseau aqueduc
+        const featureLayer3 = new FeatureLayer({
+          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/3"
+        });
+		
+		map.add(featureLayer3,0);
 		
 
       });
@@ -70,9 +115,7 @@
   </script>
 </head>
 
-<body>
-  <div id="viewDiv"></div>
-</body>
+
 
 </html>
 
