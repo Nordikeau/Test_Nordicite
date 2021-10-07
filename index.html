@@ -76,7 +76,7 @@
 
   <script>
   
- require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList","esri/layers/GraphicsLayer","esri/widgets/BasemapToggle"], function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList,GraphicsLayer,BasemapToggle) {
+ require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList","esri/layers/GraphicsLayer","esri/widgets/BasemapToggle","esri/widgets/Legend"], function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList,GraphicsLayer,BasemapToggle,Legend) {
 
         esriConfig.apiKey = "AAPK42ff91e61f5a45318f44727cec514cf8mmoZ9pyBkhoToszHnWulnwGinBEoozHHe1fCo-vsiEfTFBC7N8sniXmDxJizat3h";
 
@@ -155,11 +155,29 @@
       }
 	   */
 	   
+	   // template du popup
+	   const template1 = {
+          // autocasts as new PopupTemplate()
+          title : "No. de la borne : {gid_bf_proprietaire}",
+          /*
+          content: [
+            {
+              type: "fields",
+              fieldInfos: [
+                {
+                  fieldName: "gid_bf_proprietaire",
+                  label: "ID : "
+                
+                },
+              ]
+            },
+          ]*/
+        };
+	   
 	   
 	
 	
-	
-	
+
 	
 	
 	
@@ -186,7 +204,8 @@
        
 		// Bornes d'incendies
         const featureLayer1 = new FeatureLayer({
-          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/1"
+          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/1",
+		  popupTemplate: template1
         });
 		
 		map.add(featureLayer1);
@@ -207,14 +226,17 @@
 		map.add(featureLayer4);
 		
 		
+		
+		
+		
+		
+		
         /********************
          * Add layerlist
          ********************/
-		
-		let layerList = new LayerList({
-        view: view,
-		showLegend: true,
-		operationalItems: [
+		 
+		 // Créer la liste des couches
+		 var ListeCouche = [
 		{
         layer: featureLayer4,
         title: "Capteur"
@@ -240,6 +262,12 @@
 		visible:false
 		},]
 		
+		// Création de la liste des couches
+		
+		let layerList = new LayerList({
+        view: view,
+		showLegend: true,
+		operationalItems: ListeCouche
         });
         // Adds widget below other elements in the top left corner of the view
         view.ui.add(layerList, {
@@ -248,6 +276,29 @@
         });
       
 		layerList.operationalItems.reverse();
+		
+	    // Création de la légende		
+	    let legend = new Legend({
+        view: view,
+        //layerInfos: ListeCouche
+        layerInfos: [{
+        layer: featureLayer4,
+        title: "Capteur"
+        }]
+        });
+
+view.ui.add(legend, "bottom-left");
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 
       });
