@@ -15,19 +15,23 @@
     }
 	
 	#Fenetre1 {
-	position: absolute;
+    position: absolute;
     z-index: 1000;
     background: white;
     padding: 10px;
-    right: 0;
+    left: 0;
     margin: 10px;
-    min-height: 50px;
-    width: 190px;
+    height: 50%;
+    width: 240px;
     left: 0px;
-	top:73px;
-    border-radius: .4em;
+    top: 0px;
+    border-radius: .0em;
     box-shadow: 0 0 6px #999;
-}
+    }
+	
+	
+	
+	
   </style>
 
   <link rel="stylesheet" href="https://js.arcgis.com/4.19/esri/themes/light/main.css">
@@ -35,6 +39,10 @@
   
   
   <body>
+  <!--Fenêtre d'infobulle item 1   
+    <div  id = "Fenetre1">
+	<p style="text-align:center; font-size: 12px; color:grey; ">Saint-Esprit - Nordicité</p>
+	</div>-->
   <div id="viewDiv"></div>
 </body>
 
@@ -43,22 +51,8 @@
   <script src="https://js.arcgis.com/4.19/"></script>
 
   <script>
-
-
-
-
- 
- 
- 
   
-  
- 
-
-  
-  
-  
-  
- require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer"], function (esriConfig,Map, MapView,FeatureLayer) {
+ require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList"], function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList) {
 
         esriConfig.apiKey = "AAPK42ff91e61f5a45318f44727cec514cf8mmoZ9pyBkhoToszHnWulnwGinBEoozHHe1fCo-vsiEfTFBC7N8sniXmDxJizat3h";
 
@@ -69,10 +63,40 @@
         const view = new MapView({
           map: map,
           center: [-73.661612, 45.897975], // Longitude, latitude
-          zoom: 13,	  // Zoom level
+          zoom: 13,		  // Zoom level
           container: "viewDiv" // Div element
         });
 		
+		// Enlever le bouton home
+		view.ui.remove('zoom');
+		
+	    // Ajouter le bouton home
+	    const homeBtn = new Home({
+        view: view
+        });
+        view.ui.add(homeBtn, "top-right");
+		
+		// Ajouter le bouton home
+	    const ZoomBtn = new Zoom({
+        view: view
+        });
+        view.ui.add(ZoomBtn, "top-right");
+	    
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 		/********************
          * Add feature layer
@@ -105,6 +129,36 @@
         });
 		
 		map.add(featureLayer3,0);
+		
+		let layerList = new LayerList({
+        view: view,
+		showLegend: true,
+		operationalItems: [{
+        layer: featureLayer3,
+        title: "Réseau d'aqueduc"
+		},
+		{
+        layer: featureLayer2,
+        title: "Vanne"
+		},
+		{
+        layer: featureLayer1,
+        title: "Borne d'incendie"
+		},
+		{
+        layer: featureLayer,
+        title: "Échantillonage",
+		visible:false
+		},]
+		
+        });
+        // Adds widget below other elements in the top left corner of the view
+        view.ui.add(layerList, {
+        position: "top-left"
+
+        });
+      
+		
 		
 
       });
