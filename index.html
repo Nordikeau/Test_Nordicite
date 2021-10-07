@@ -4,6 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Nordicité - Test</title>
+  
+   <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.21/esri/themes/light/main.css"
+    />
+  
+   <script src="https://js.arcgis.com/4.21/"></script>
+  
   <style>
     html,
     body,
@@ -45,10 +53,11 @@
     user-select: none;
 }
  
+
 	
   </style>
 
-  <link rel="stylesheet" href="https://js.arcgis.com/4.19/esri/themes/light/main.css">
+  
   
   
   
@@ -62,17 +71,19 @@
 
 
 
-  <script src="https://js.arcgis.com/4.19/"></script>
+
 
   <script>
   
- require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList","esri/layers/GraphicsLayer"], function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList,OpenStreetMapLayer,GraphicsLayer) {
+ require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList","esri/layers/GraphicsLayer","esri/widgets/BasemapToggle"], function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList,GraphicsLayer,BasemapToggle) {
 
         esriConfig.apiKey = "AAPK42ff91e61f5a45318f44727cec514cf8mmoZ9pyBkhoToszHnWulnwGinBEoozHHe1fCo-vsiEfTFBC7N8sniXmDxJizat3h";
 
-        const map = new Map({
-          basemap: "arcgis-topographic"
+       const map = new Map({
+          basemap: "topo-vector"
         });
+		
+
 
         const view = new MapView({
           map: map,
@@ -80,6 +91,18 @@
           zoom: 13,		  // Zoom level
           container: "viewDiv" // Div element
         });
+		
+		 // 1 - Create the widget
+        const toggle = new BasemapToggle({
+          // 2 - Set properties
+          view: view, // view that provides access to the map's 'topo-vector' basemap
+          nextBasemap: "hybrid" // allows for toggling to the 'hybrid' basemap
+        });
+
+        // Add widget to the top right corner of the view
+        view.ui.add(toggle, "top-right");
+
+   
 		
 		//////////// Enlever le bouton home /////////////
 		view.ui.remove('zoom');
@@ -130,6 +153,8 @@
         }
       }
 	   */
+	   
+	   
 	
 	
 	
