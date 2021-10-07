@@ -29,6 +29,10 @@
     box-shadow: 0 0 6px #999;
     }
 	
+	#layerListPane{
+    width:5%;
+}
+	
 	.esri-layer-list__item-label {
     display: flex;
     flex-flow: row;
@@ -40,7 +44,7 @@
     -webkit-user-select: none;
     user-select: none;
 }
-	
+ 
 	
   </style>
 
@@ -62,7 +66,7 @@
 
   <script>
   
- require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList"], function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList) {
+ require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList","esri/layers/GraphicsLayer"], function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList,OpenStreetMapLayer,GraphicsLayer) {
 
         esriConfig.apiKey = "AAPK42ff91e61f5a45318f44727cec514cf8mmoZ9pyBkhoToszHnWulnwGinBEoozHHe1fCo-vsiEfTFBC7N8sniXmDxJizat3h";
 
@@ -77,7 +81,7 @@
           container: "viewDiv" // Div element
         });
 		
-		// Enlever le bouton home
+		//////////// Enlever le bouton home /////////////
 		view.ui.remove('zoom');
 		
 	    // Ajouter le bouton home
@@ -86,19 +90,46 @@
         });
         view.ui.add(homeBtn, "top-right");
 		
-		// Ajouter le bouton home
+		//////////// Ajouter le bouton home ////////////
 	    const ZoomBtn = new Zoom({
         view: view
         });
         view.ui.add(ZoomBtn, "top-right");
 	    
-
+ 
+	    //////////// Ajouter des label ////////////
+	    const labelClass = {
+          // autocasts as new LabelClass()
+          symbol: {
+            type: "text", // autocasts as new TextSymbol()
+            color: "black",
+			 haloColor: "#BEFFE8",
+             haloSize: 1,
+            font: {
+              // autocast as new Font()
+              family: "arial",
+              size: 10,
+              weight: "bold"
+            }
+          },
+          labelPlacement: "center-right",
+          labelExpressionInfo: {
+            expression: "$feature.nom"
+          }
+        };
 	
-	
-	
-	
-	
-	
+	    /*
+        //////////// Ajouter un nouveau symbol ////////////
+	    const capteurRenderer = {
+        "type": "simple",
+        "symbol": {
+          "type": "picture-marker",
+           "url": 'images/wifi-signal.png',
+          "width": "18px",
+          "height": "18px"
+        }
+      }
+	   */
 	
 	
 	
@@ -111,53 +142,75 @@
 		/********************
          * Add feature layer
          ********************/
-
-        // Point d'échantillonage
-        const featureLayer = new FeatureLayer({
-          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/0"
+		 
+		 // Réseau aqueduc
+        const featureLayer3 = new FeatureLayer({
+          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/3"
         });
 		
-		map.add(featureLayer,0);
-		
-		// Bornes d'incendies
-        const featureLayer1 = new FeatureLayer({
-          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/1"
-        });
-		
-		map.add(featureLayer1,1);
+		map.add(featureLayer3);
 		
 		// Vannes
         const featureLayer2 = new FeatureLayer({
           url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/2"
         });
 		
-		map.add(featureLayer2,1);
-		
-		// Réseau aqueduc
-        const featureLayer3 = new FeatureLayer({
-          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/3"
+		map.add(featureLayer2);
+
+       
+		// Bornes d'incendies
+        const featureLayer1 = new FeatureLayer({
+          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/1"
         });
 		
-		map.add(featureLayer3,0);
+		map.add(featureLayer1);
+		
+		// Point d'échantillonage
+        const featureLayer = new FeatureLayer({
+          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/0"
+        });
+		
+		map.add(featureLayer);
+		
+		// Position des capteurs
+        const featureLayer4 = new FeatureLayer({
+          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/4",
+		  labelingInfo: [labelClass]
+        });
+		
+		map.add(featureLayer4);
+		
+		
+        /********************
+         * Add layerlist
+         ********************/
 		
 		let layerList = new LayerList({
         view: view,
 		showLegend: true,
-		operationalItems: [{
-        layer: featureLayer3,
-        title: "Réseau d'aqueduc"
-		},
+		operationalItems: [
 		{
-        layer: featureLayer2,
-        title: "Vanne"
-		},
-		{
-        layer: featureLayer1,
-        title: "Borne d'incendie"
+        layer: featureLayer4,
+        title: "Capteur"
 		},
 		{
         layer: featureLayer,
-        title: "Échantillonage",
+        title: "Point d'échantillonage",
+		visible:false
+		},
+		{
+        layer: featureLayer1,
+        title: "Borne d'incendie",
+		visible:false
+		},
+		{
+        layer: featureLayer2,
+        title: "Vanne",
+		visible:false
+		},
+		{
+        layer: featureLayer3,
+        title: "Réseau d'aqueduc",
 		visible:false
 		},]
 		
@@ -168,7 +221,7 @@
 
         });
       
-		
+		layerList.operationalItems.reverse();
 		
 
       });
