@@ -52,15 +52,9 @@
     -webkit-user-select: none;
     user-select: none;
 }
- 
-
 	
   </style>
-
-  
-  
-  
-  
+ 
   <body>
   <!--Fenêtre d'infobulle item 1  
     <div  id = "Fenetre1">
@@ -76,15 +70,13 @@
 
   <script>
   
- require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList","esri/layers/GraphicsLayer","esri/widgets/BasemapToggle","esri/widgets/Legend"], function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList,GraphicsLayer,BasemapToggle,Legend) {
+ require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList","esri/layers/GraphicsLayer","esri/widgets/BasemapToggle","esri/widgets/Legend","esri/renderers/SimpleRenderer","esri/symbols/SimpleMarkerSymbol"], function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList,GraphicsLayer,BasemapToggle,Legend,SimpleRenderer,SimpleMarkerSymbol) {
 
         esriConfig.apiKey = "AAPK42ff91e61f5a45318f44727cec514cf8mmoZ9pyBkhoToszHnWulnwGinBEoozHHe1fCo-vsiEfTFBC7N8sniXmDxJizat3h";
 
        const map = new Map({
           basemap: "topo-vector"
         });
-		
-
 
         const view = new MapView({
           map: map,
@@ -93,20 +85,23 @@
           container: "viewDiv" // Div element
         });
 		
-		 // 1 - Create the widget
+		 // Ajouter le Basemap toggle
         const toggle = new BasemapToggle({
           // 2 - Set properties
           view: view, // view that provides access to the map's 'topo-vector' basemap
           nextBasemap: "hybrid" // allows for toggling to the 'hybrid' basemap
         });
 
-        // Add widget to the top right corner of the view
         view.ui.add(toggle, "top-right");
-
-   
-		
-		//////////// Enlever le bouton home /////////////
+	
+		//////////// Enlever le bouton Zoom par défault pour ensuite en créer un autre ua bon endroit /////////////
 		view.ui.remove('zoom');
+		
+		//////////// Ajouter le bouton Zoom ////////////
+	    const ZoomBtn = new Zoom({
+        view: view
+        });
+        view.ui.add(ZoomBtn, "top-right");
 		
 	    // Ajouter le bouton home
 	    const homeBtn = new Home({
@@ -114,14 +109,10 @@
         });
         view.ui.add(homeBtn, "top-right");
 		
-		//////////// Ajouter le bouton home ////////////
-	    const ZoomBtn = new Zoom({
-        view: view
-        });
-        view.ui.add(ZoomBtn, "top-right");
+		
 	    
  
-	    //////////// Ajouter des label ////////////
+	    //////////// Ajouter le style des labels ////////////
 	    const labelClass = {
           // autocasts as new LabelClass()
           symbol: {
@@ -174,10 +165,81 @@
           ]*/
         };
 	   
-	   
-	
-	
+        
+		// Création de la symbologie de la conformité
+        let symbolNonComforme = {
+		type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+		style: "circle",
+		color: "red",
+		size: "13px",  // pixels
+		outline: {  // autocasts as new SimpleLineSymbol()
+		color: [ 135, 22,22 ],
+		width: 1.5  // points
+		}
+		};
 
+		let symbolComforme = {
+		type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+		style: "circle",
+		color: "#0eed2a",
+		size: "13px",  // pixels
+		outline: {  // autocasts as new SimpleLineSymbol()
+		color: "#0b6c17",
+		width: 1.5  // points
+		}
+		};
+
+		let symbolAutre = {
+		type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+		style: "circle",
+		color: "#aba8a8",
+		size: "13px",  // pixels
+		outline: {  // autocasts as new SimpleLineSymbol()
+		color: "#181717",
+		width: 1.5  // points
+		}
+		};
+
+		let renderer = {
+		type: "unique-value",  // autocasts as new UniqueValueRenderer()
+		valueExpression: "When($feature.val_Chlore < 0.3, 'Non-conforme', $feature.val_Chlore > 0.3, 'Conforme', 'Non-mesuré')",
+		uniqueValueInfos: [
+		{
+		value: "Non-conforme",  // features labeled as "High"
+		symbol: symbolNonComforme  // will be assigned sym1
+		}, {
+		value: "Conforme",  // features labeled as "Medium"
+		symbol: symbolComforme  // will be assigned sym2
+		}, {
+		value: "Non-mesuré",  // features labeled as "Low"
+		symbol: symbolAutre // will be assigned sym2
+		}
+		]
+		};
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -210,6 +272,14 @@
 		
 		map.add(featureLayer1);
 		
+		// Point d'échantillonage - Thémathique Chlore
+        const featureLayerChlore = new FeatureLayer({
+          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/0",
+		  renderer: renderer
+        });
+		
+		map.add(featureLayerChlore);
+		
 		// Point d'échantillonage
         const featureLayer = new FeatureLayer({
           url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/0"
@@ -231,6 +301,11 @@
 		
 		
 		
+		
+		
+		
+		
+		
         /********************
          * Add layerlist
          ********************/
@@ -244,6 +319,11 @@
 		{
         layer: featureLayer,
         title: "Point d'échantillonage",
+		visible:false
+		},
+		{
+        layer: featureLayerChlore,
+        title: "Conformité - Chlore",
 		visible:false
 		},
 		{
@@ -282,12 +362,12 @@
         view: view,
         //layerInfos: ListeCouche
         layerInfos: [{
-        layer: featureLayer4,
-        title: "Capteur"
+        layer: featureLayerChlore,
+        title: "Niveau de conformité du Chlore :"
         }]
         });
 
-view.ui.add(legend, "bottom-left");
+        view.ui.add(legend, "bottom-left");
 		
 		
 		
