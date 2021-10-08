@@ -70,7 +70,8 @@
 
   <script>
   
- require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList","esri/layers/GraphicsLayer","esri/widgets/BasemapToggle","esri/widgets/Legend","esri/renderers/SimpleRenderer","esri/symbols/SimpleMarkerSymbol"], function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList,GraphicsLayer,BasemapToggle,Legend,SimpleRenderer,SimpleMarkerSymbol) {
+ require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList","esri/layers/GraphicsLayer","esri/widgets/BasemapToggle","esri/widgets/Legend","esri/renderers/SimpleRenderer","esri/symbols/SimpleMarkerSymbol","esri/layers/GroupLayer"], 
+ function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList,GraphicsLayer,BasemapToggle,Legend,SimpleRenderer,SimpleMarkerSymbol,GroupLayer) {
 
         esriConfig.apiKey = "AAPK42ff91e61f5a45318f44727cec514cf8mmoZ9pyBkhoToszHnWulnwGinBEoozHHe1fCo-vsiEfTFBC7N8sniXmDxJizat3h";
 
@@ -275,17 +276,30 @@
 		// Point d'échantillonage - Thémathique Chlore
         const featureLayerChlore = new FeatureLayer({
           url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/0",
-		  renderer: renderer
+		  renderer: renderer,
+		  title : "Conformité - Chlore"
         });
 		
 		map.add(featureLayerChlore);
 		
 		// Point d'échantillonage
         const featureLayer = new FeatureLayer({
-          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/0"
+          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/0",
+		  title : "Point d'échantillonage"
         });
 		
 		map.add(featureLayer);
+		
+		// Création du groupe de couches pour la thématique 1.
+		
+		var Groupe1 = new GroupLayer({
+        title: "Thématique - Test",
+        visible: false,
+        visibilityMode: "exclusive",
+        layers: [featureLayerChlore, featureLayer]
+        });
+		
+		map.add(Groupe1);
 		
 		// Position des capteurs
         const featureLayer4 = new FeatureLayer({
@@ -294,9 +308,6 @@
         });
 		
 		map.add(featureLayer4);
-		
-		
-		
 		
 		
 		
