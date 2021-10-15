@@ -47,7 +47,7 @@
     justify-content: flex-start;
     align-items: flex-start;
     flex: 1;
-    color: #0c93e3;
+    color: black;
 	font-weight: bold;
     -webkit-user-select: none;
     user-select: none;
@@ -70,8 +70,10 @@
 
   <script>
   
- require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList","esri/layers/GraphicsLayer","esri/widgets/BasemapToggle","esri/widgets/Legend","esri/renderers/SimpleRenderer","esri/symbols/SimpleMarkerSymbol","esri/layers/GroupLayer"], 
- function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList,GraphicsLayer,BasemapToggle,Legend,SimpleRenderer,SimpleMarkerSymbol,GroupLayer) {
+  
+  
+ require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList","esri/layers/GraphicsLayer","esri/widgets/BasemapToggle","esri/widgets/Legend","esri/renderers/SimpleRenderer","esri/symbols/SimpleMarkerSymbol","esri/layers/GroupLayer","esri/symbols/SimpleLineSymbol"], 
+ function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList,GraphicsLayer,BasemapToggle,Legend,SimpleRenderer,SimpleMarkerSymbol,GroupLayer,SimpleLineSymbol) {
 
         esriConfig.apiKey = "AAPK42ff91e61f5a45318f44727cec514cf8mmoZ9pyBkhoToszHnWulnwGinBEoozHHe1fCo-vsiEfTFBC7N8sniXmDxJizat3h";
 
@@ -90,7 +92,7 @@
         const toggle = new BasemapToggle({
           // 2 - Set properties
           view: view, // view that provides access to the map's 'topo-vector' basemap
-          nextBasemap: "hybrid" // allows for toggling to the 'hybrid' basemap
+          nextBasemap: "hybrid"		  // allows for toggling to the 'hybrid' basemap
         });
 
         view.ui.add(toggle, "top-right");
@@ -133,6 +135,28 @@
             expression: "$feature.nom"
           }
         };
+		
+		//////////// Ajouter le style des labels ////////////
+	    const labelClassBF = {
+          // autocasts as new LabelClass()
+          symbol: {
+            type: "text", // autocasts as new TextSymbol()
+            color: "#720c0c",
+			haloColor: "white",
+             haloSize: 1,
+            font: {
+              // autocast as new Font()
+              family: "arial",
+              size: 8
+            }
+          },
+          labelPlacement: "center-right",
+          labelExpressionInfo: {
+            expression: "$feature.gid_bf_proprietaire"
+          },
+		  maxScale: 0,
+          minScale: 10000,
+        };
 	
 	    /*
         //////////// Ajouter un nouveau symbol ////////////
@@ -172,7 +196,7 @@
 		type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
 		style: "circle",
 		color: "red",
-		size: "13px",  // pixels
+		size: "15px",  // pixels
 		outline: {  // autocasts as new SimpleLineSymbol()
 		color: [ 135, 22,22 ],
 		width: 1.5  // points
@@ -183,7 +207,7 @@
 		type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
 		style: "circle",
 		color: "#0eed2a",
-		size: "13px",  // pixels
+		size: "15px",  // pixels
 		outline: {  // autocasts as new SimpleLineSymbol()
 		color: "#0b6c17",
 		width: 1.5  // points
@@ -194,7 +218,7 @@
 		type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
 		style: "circle",
 		color: "#aba8a8",
-		size: "13px",  // pixels
+		size: "15px",  // pixels
 		outline: {  // autocasts as new SimpleLineSymbol()
 		color: "#181717",
 		width: 1.5  // points
@@ -203,13 +227,13 @@
 
 		let renderer = {
 		type: "unique-value",  // autocasts as new UniqueValueRenderer()
-		valueExpression: "When($feature.val_Chlore < 0.3, 'Non-conforme', $feature.val_Chlore > 0.3, 'Conforme', 'Non-mesuré')",
+		valueExpression: "When($feature.val_Chlore < 0.3, 'Non-conforme < 0.3', $feature.val_Chlore > 0.3, 'Conforme > 0.3', 'Non-mesuré')",
 		uniqueValueInfos: [
 		{
-		value: "Non-conforme",  // features labeled as "High"
+		value: "Non-conforme < 0.3",  // features labeled as "High"
 		symbol: symbolNonComforme  // will be assigned sym1
 		}, {
-		value: "Conforme",  // features labeled as "Medium"
+		value: "Conforme > 0.3",  // features labeled as "Medium"
 		symbol: symbolComforme  // will be assigned sym2
 		}, {
 		value: "Non-mesuré",  // features labeled as "Low"
@@ -218,9 +242,7 @@
 		]
 		};
 	
-	
-	
-	
+
 	
 	
 	
@@ -250,39 +272,128 @@
          * Add feature layer
          ********************/
 		 
-		 // Réseau aqueduc
+		 /////////////////// Réseau aqueduc //////////////////
         const featureLayer3 = new FeatureLayer({
-          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/3"
+          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/3",
+		  renderer: 
+		  {
+          type: "simple", // autocasts as new SimpleRenderer()
+          symbol: {
+            type: "simple-line", // autocasts as new SimpleMarkerSymbol()
+            color: "#4bb6f5", // Orange
+            width: 2
+          }
+        }
+		
         });
+	/*
+		var test = featureLayer3.queryFeatureCount();
+		var test2 = test.toString();
+		console.log(test);
+		*/
+		
+		var test = featureLayer3.queryFeatureCount().then
+		(function(count){
+        console.log(count);
+		return count;
+        });
+		
+		console.log(test);
 		
 		map.add(featureLayer3);
 		
-		// Vannes
+		 /////////////////// Vannes  ///////////////////
+		 
         const featureLayer2 = new FeatureLayer({
           url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/2"
         });
 		
 		map.add(featureLayer2);
 
-       
-		// Bornes d'incendies
+         /////////////////// Bornes d'incendies - Thématique pression statique   ///////////////////
+		 
+        const featureLayer1Pression = new FeatureLayer({
+          url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/1",
+		  popupTemplate: template1,
+		  title : "Pression statique 2019",
+		  renderer: {
+		  type: "unique-value",  // autocasts as new UniqueValueRenderer()
+		  valueExpression: "When($feature.pression_statique < 65, 'Pression < 65', $feature.pression_statique >= 65 && $feature.pression_statique <9999, 'Pression > 65', 'Non-mesuré')",
+		  uniqueValueInfos: [
+		  {
+		  value: "Pression < 65", 
+		  symbol: {
+		  type: "simple-marker",  
+		  style: "circle",
+		  color: "yellow",
+		  size: "20px",  
+		  outline: {  
+		  color: "#181717",
+		  width: 0.3  
+		  }
+		  }  
+		  }, {
+		  value: "Pression > 65",  
+		  symbol: {
+		  type: "simple-marker",  
+		  style: "circle",
+		  color: "#07c40d",
+		  size: "20px",  
+		  outline: {  
+		  color: "#181717",
+		  width: 0.3 
+		  }
+		  }  
+		  }, {
+		  value: "Non-mesuré",  
+		  symbol: {
+		  type: "simple-marker",  
+		  style: "circle",
+		  color: "grey",
+		  size: "0px",  
+		  outline: {  
+		  color: "#181717",
+		  width: 0 
+		  }
+		  } 
+		  }]}
+		
+        });
+		
+		 /////////////////// Bornes d'incendies  ///////////////////
         const featureLayer1 = new FeatureLayer({
           url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/1",
-		  popupTemplate: template1
+		  popupTemplate: template1,
+		  title : "Borne d'incendies",
+		  labelingInfo: [labelClassBF]
         });
 		
 		map.add(featureLayer1);
 		
-		// Point d'échantillonage - Thémathique Chlore
+		map.add(featureLayer1Pression);
+		
+		// Création du groupe de couches pour la thématique 1.
+		
+		var Groupe2 = new GroupLayer({
+        title: "BORNES D'INCENDIES",
+        visible: false,
+        visibilityMode: "independent",
+        layers: [featureLayer1Pression, featureLayer1]
+        });
+		
+		map.add(Groupe2);
+		
+		 /////////////////// Point d'échantillonage - Thémathique Chlore  ///////////////////
         const featureLayerChlore = new FeatureLayer({
           url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/0",
 		  renderer: renderer,
+		  opacity : 0.5,
 		  title : "Conformité - Chlore"
         });
 		
 		map.add(featureLayerChlore);
 		
-		// Point d'échantillonage
+		 /////////////////// Point d'échantillonage   ///////////////////
         const featureLayer = new FeatureLayer({
           url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/0",
 		  title : "Point d'échantillonage"
@@ -293,7 +404,7 @@
 		// Création du groupe de couches pour la thématique 1.
 		
 		var Groupe1 = new GroupLayer({
-        title: "Thématique - Test",
+        title: "PRÉLÈVEMENT - eau potable",
         visible: false,
         visibilityMode: "exclusive",
         layers: [featureLayerChlore, featureLayer]
@@ -301,13 +412,18 @@
 		
 		map.add(Groupe1);
 		
-		// Position des capteurs
+		 /////////////////// Position des capteurs   ///////////////////
         const featureLayer4 = new FeatureLayer({
           url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/4",
 		  labelingInfo: [labelClass]
         });
 		
 		map.add(featureLayer4);
+		
+		
+		
+		
+		
 		
 		
 		
@@ -343,6 +459,11 @@
 		visible:false
 		},
 		{
+        layer: featureLayer1Pression,
+        title: "Pression statique",
+		visible:false
+		},
+		{
         layer: featureLayer2,
         title: "Vanne",
 		visible:false
@@ -368,6 +489,11 @@
       
 		layerList.operationalItems.reverse();
 		
+		
+		 /********************
+         * Add legend
+         ********************/
+		
 	    // Création de la légende		
 	    let legend = new Legend({
         view: view,
@@ -375,6 +501,10 @@
         layerInfos: [{
         layer: featureLayerChlore,
         title: "Niveau de conformité du Chlore :"
+        },
+		{
+        layer: featureLayer1Pression,
+        title: "Pression statique 2019 :"
         }]
         });
 
