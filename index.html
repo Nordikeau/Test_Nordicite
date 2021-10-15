@@ -77,9 +77,14 @@
 
         esriConfig.apiKey = "AAPK42ff91e61f5a45318f44727cec514cf8mmoZ9pyBkhoToszHnWulnwGinBEoozHHe1fCo-vsiEfTFBC7N8sniXmDxJizat3h";
 
+
+
+
        const map = new Map({
           basemap: "topo-vector"
         });
+		
+
 
         const view = new MapView({
           map: map,
@@ -87,6 +92,8 @@
           zoom: 13,		  // Zoom level
           container: "viewDiv" // Div element
         });
+		
+		
 		
 		 // Ajouter le Basemap toggle
         const toggle = new BasemapToggle({
@@ -396,7 +403,11 @@
 		 /////////////////// Point d'échantillonage   ///////////////////
         const featureLayer = new FeatureLayer({
           url: "https://utility.arcgis.com/usrsvcs/servers/6cd9b81fb9e04304894aa9957493245c/rest/services/Z_Nordicite_PT_Echantillonage_ST_Esprit/FeatureServer/0",
-		  title : "Point d'échantillonage"
+		  title : "Point d'échantillonage",
+		  popupTemplate : {
+          // autocasts as new PopupTemplate()
+          title : "{Date_ST}",
+        }
         });
 		
 		map.add(featureLayer);
@@ -522,8 +533,7 @@
 		
 		
 		
-		
-		
+	
 		
 		
 		
