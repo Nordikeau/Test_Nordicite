@@ -72,8 +72,8 @@
   
   
   
- require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList","esri/layers/GraphicsLayer","esri/widgets/BasemapToggle","esri/widgets/Legend","esri/renderers/SimpleRenderer","esri/symbols/SimpleMarkerSymbol","esri/layers/GroupLayer","esri/symbols/SimpleLineSymbol"], 
- function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList,GraphicsLayer,BasemapToggle,Legend,SimpleRenderer,SimpleMarkerSymbol,GroupLayer,SimpleLineSymbol) {
+ require(["esri/config","esri/Map", "esri/views/MapView","esri/layers/FeatureLayer","esri/widgets/Home","esri/widgets/Zoom","esri/widgets/LayerList","esri/layers/GraphicsLayer","esri/widgets/BasemapToggle","esri/widgets/Legend","esri/renderers/SimpleRenderer","esri/symbols/SimpleMarkerSymbol","esri/layers/GroupLayer","esri/symbols/SimpleLineSymbol","esri/widgets/Expand"], 
+ function (esriConfig,Map, MapView,FeatureLayer,Home,Zoom,LayerList,GraphicsLayer,BasemapToggle,Legend,SimpleRenderer,SimpleMarkerSymbol,GroupLayer,SimpleLineSymbol,Expand) {
 
         esriConfig.apiKey = "AAPK42ff91e61f5a45318f44727cec514cf8mmoZ9pyBkhoToszHnWulnwGinBEoozHHe1fCo-vsiEfTFBC7N8sniXmDxJizat3h";
 
@@ -479,13 +479,22 @@
 		let layerList = new LayerList({
         view: view,
 		showLegend: true,
-		operationalItems: ListeCouche
+		operationalItems: ListeCouche,
+		container: document.createElement("div")
         });
-        // Adds widget below other elements in the top left corner of the view
-        view.ui.add(layerList, {
-        position: "top-left"
+		
+		var bgExpand = new Expand({
+        view: view,
+        content: layerList
+        });
 
-        });
+        // Add the expand instance to the ui
+        view.ui.add(bgExpand, "top-left");
+		
+        // Adds widget below other elements in the top left corner of the view
+       // view.ui.add(layerList, {
+        //position: "top-left"
+        //});
       
 		layerList.operationalItems.reverse();
 		
@@ -497,6 +506,7 @@
 	    // Création de la légende		
 	    let legend = new Legend({
         view: view,
+		respectLayerVisibility : true,
         //layerInfos: ListeCouche
         layerInfos: [{
         layer: featureLayerChlore,
